@@ -22,11 +22,16 @@ variable "dependency_ids" {
   default     = []
 }
 
+variable "profile" {
+  description = "The aws profile to use to execute commands. If role is specified, it will be assumed from this profile."
+  default     = "default"
+}
+
 data "aws_caller_identity" "id" {}
 
 locals {
   account_id      = "${var.account_id == 0 ? data.aws_caller_identity.id.account_id : var.account_id}"
-  assume_role_cmd = "source ${path.module}/assume_role.sh ${local.account_id} ${var.role}"
+  assume_role_cmd = "source ${path.module}/assume_role.sh ${local.account_id} ${var.role} ${var.profile}"
 }
 
 resource "null_resource" "cli_resource" {
